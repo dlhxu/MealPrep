@@ -8,10 +8,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-//  TODO create a New Meal class for when they want to enter a new type of meal
+
+import java.util.LinkedList;
+//  Complete create a New Meal class for when they want to enter a new type of meal
+// TODO create a linkedlist of objects that will contain all the users meals
 
 public class MainActivity extends AppCompatActivity {
 
+
+    // meal number (for repetitively instantiating meal objects)
+     int mealNum;
+
+    // linked list for storing meals
+    LinkedList mealList = new LinkedList();
+
+
+    // main menu button objects
     Button mNewMealButton;
     Button mNewMealPlanButton;
     Button mMyMealsButton;
@@ -23,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // run setup
+        // read from internal storage to retrieve the user's preset meals, weekly meal, etc.
+        // create the linkedlist that the new
+
+        // main menu
 
         final Intent newMealIntent = new Intent(MainActivity.this, NewMealActivity.class);
 
@@ -43,14 +61,21 @@ public class MainActivity extends AppCompatActivity {
                 // page that can be screenshotted (leverage the api)
             }
         });
+
+
         mMyMealsButton = (Button) findViewById(R.id.my_meals_button);
         mMyMealsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // bring up a page that displays all the saved meals that the user has created
                 // requires a new activity
+
+                // iterate through a linked list, generating a new object and assigning it to a button everytime
+                // possible through the View and ViewGroup objects, read up on it (documentation bookmarked!
             }
         });
+
+
         mThisWeekButton = (Button) findViewById(R.id.this_week_prep_button);
         mThisWeekButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,45 +86,92 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
-    static class NewMealActivity extends AppCompatActivity{
+    void appInit() {
+        //mealNum = linkedlist.getLast.mealNum;
+
+
+    }
+    // NewMealActivity is mostly at working completeness -> requires ability to add multiple proteins
+    //  or veg, etc. per meal
+
+    // NewMealActivity is accessed via the MainActivity, it is the screen that the user will see
+    //  when they want to add a new meal
+
+    // NewMealActivity takes inputs from the user, via EditTextViews, and stores the data in the form of
+    //  an Object, which is appended to the end of a linkedList. The Object will contain "mealNum" and
+    //  a mealName in addition to the composition of the meal, used to aid in saving and accessing
+    //  internal storage
+
+        public class NewMealActivity extends AppCompatActivity{
+
+        EditText mMealNameEditText;
+        EditText mProteinOptionEditText;
+        EditText mCarbOptionEditText;
+        EditText mVegOptionEditText;
+        EditText mTotalCalsEditText;
+        Button mAddMealButton;
+
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
             super.onCreate(savedInstanceState, persistentState);
+
+            final String mealName;
+            final String protein;
+            final String carb;
+            final String veg;
+            final int totalCals;
+
+            // Complete create variables to access layout XML stuff
+            // Complete create variables that will store information that the user inputs into textbox views
+            // Complete create methods that will handle "done" click -> instantiate a new meal via constructor
+            // TODO add option to add additional "protein" "carb" "veg" options within the same meal
+
+            // Textboxes and relevant variables
+
+            // meal name
+
+            mMealNameEditText = (EditText) findViewById(R.id.meal_name_editText);
+            mealName = mMealNameEditText.getText().toString();
+
+            // protein component
+            mProteinOptionEditText = (EditText) findViewById(R.id.protein_option_editText);
+            protein = mProteinOptionEditText.getText().toString();
+
+            // carb component (s)
+            mCarbOptionEditText = (EditText) findViewById(R.id.carb_option_editText);
+            carb = mCarbOptionEditText.getText().toString();
+
+            // vegetable component (in particular) -> should include a "health mode" that changes the preset editTexts to
+            // remind you to eat properly
+            mVegOptionEditText = (EditText) findViewById(R.id.veg_option_editText);
+            veg = mVegOptionEditText.getText().toString();
+
+            // total calories (should be required)
+            mTotalCalsEditText = (EditText) findViewById(R.id.total_cals_editText);
+            totalCals = Integer.getInteger(mTotalCalsEditText.getText().toString());
+
+            // macros (not required)
+
+            // Add Meal button
+            mAddMealButton = (Button) findViewById(R.id.add_meal_button);
+            mAddMealButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    // Complete handle making a new meal, which will be tacked onto the end of a linkedlist
+                    mealList.add(new Meal(mealNum, mealName, protein, carb, veg, totalCals));
+
+                }
+            });
+
+
+
         }
 
 
-        // TODO create variables to access layout XML stuff
-        // TODO create variables that will store information that the user inputs into textbox views
-        // TODO create methods that will handle an overflow menu "done" click -> instantiate a new meal via constructor
-
-        // Textboxes and relevant variables
-
-        // meal name
-        String mealName;
-
-        EditText mMealNameEditText;
-
-        = (EditText) findView
-
-        // protein component
-        String protein;
-
-        // carb component (s)
-        String carb;
-
-        // vegetable component (in particular) -> should include a "health mode" that changes the preset editTexts to
-        // remind you to eat properly
-        String veg;
-        // total calories (should be required)
-        String totalCals;
-
-        // macros (not required)
-    }
-
-    static class Meal{
 
     }
 }
+

@@ -18,19 +18,21 @@
         android:hint="@string/carb_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <EditText
         android:id="@+id/veg_option_editText"
         android:hint="@string/veg_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
-        android:id="@+id/veg_option_editText"
-        android:hint="@string/veg_option"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <EditText
-        android:id="@+id/total_carbs_editText"
+        android:id="@+id/total_cals_editText"
         android:hint="@string/total_calories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/add_meal_button"
+        android:text="add Meal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
