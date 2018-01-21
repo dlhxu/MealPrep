@@ -1,10 +1,13 @@
 package dlhxu.com.mealprep;
 
+import java.io.Serializable;
+
+
 /**
  * Created by Derek on 2018-01-19.
  */
 
-public class Meal {
+public class Meal implements Serializable {
 
     int myMealNum;
     String myName;

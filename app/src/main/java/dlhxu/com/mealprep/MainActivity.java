@@ -1,6 +1,7 @@
 package dlhxu.com.mealprep;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -14,7 +15,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 //  Complete create a New Meal class for when they want to enter a new type of meal
 // Complete (STRUCTURAL) handle internal storage
@@ -22,17 +27,14 @@ import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
     // meal number (for repetitively instantiating meal objects)
-     int mealNum;
+    int mealNum;
 
     // linked list for storing meals
     LinkedList<Meal> mealList = new LinkedList();
 
-    // access any saved files
-    Internals newReader = new Internals();
-
+    // internal storage
+    File mealFile;
 
 
     // main menu button objects
@@ -48,23 +50,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // access any saved files
+        Internals newReader = new Internals(mealList, mealFile);
+
         // run setup
         // read from internal storage to retrieve the user's preset meals, weekly meal, etc.
         // create the linkedlist that the new
 
         // appInit will initialize the list of Meals if it exists
-        appInit(newReader);
+        //appInit(newReader);
 
         // main menu
 
-        final Intent newMealIntent = new Intent(MainActivity.this, NewMealActivity.class);
+
+        final Intent myMealsIntent = new Intent (MainActivity.this, MyMealsActivity.class);
 
 
         mNewMealButton = (Button) findViewById(R.id.new_meal_button);
         mNewMealButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.this.startActivity(newMealIntent);
+
+                Intent newMealIntent = new Intent(MainActivity.this, NewMealActivity.class);
+                newMealIntent.putExtra("user meals", (Serializable) mealList);
+                newMealIntent.putExtra("meal num", mealNum);
+                MainActivity.this.startActivityForResult(newMealIntent, 1);
             }
         });
 
@@ -84,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // bring up a page that displays all the saved meals that the user has created
                 // requires a new activity
+                MainActivity.this.startActivity(myMealsIntent);
 
                 // iterate through a linked list, generating a new object and assigning it to a button everytime
                 // possible through the View and ViewGroup objects, read up on it (documentation bookmarked!
@@ -103,11 +114,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == Activity.RESULT_OK){
+                Intent i = getIntent();
+                mealList = (LinkedList<Meal>) i.getSerializableExtra("user meals");
+                mealNum = (i.getIntExtra("mealNum", 0));
+            }
+        }
+    }
+
     void appInit(Internals newRead) {
 
-        mealList = newRead.getMealList();
-
-        if(mealList == null){
+        if(newRead.getMealList() == null){
             // can be used for future functionality, like starting a tutorial on how to use the app or smth
         }
         //mealNum = linkedlist.getLast.mealNum;
@@ -122,83 +143,17 @@ public class MainActivity extends AppCompatActivity {
     // NewMealActivity takes inputs from the user, via EditTextViews, and stores the data in the form of
     //  an Object, which is appended to the end of a linkedList. The Object will contain "mealNum" and
     //  a mealName in addition to the composition of the meal, used to aid in saving and accessing
-    //  internal storage
+    //  internal stor
 
-    public class NewMealActivity extends AppCompatActivity{
+    public class MyMealsActivity extends AppCompatActivity{
 
-        EditText mMealNameEditText;
-        EditText mProteinOptionEditText;
-        EditText mCarbOptionEditText;
-        EditText mVegOptionEditText;
-        EditText mTotalCalsEditText;
-        Button mAddMealButton;
+        ListIterator<Meal> mealIterator = mealList.listIterator(0);
 
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
             super.onCreate(savedInstanceState, persistentState);
-
-            final String mealName;
-            final String protein;
-            final String carb;
-            final String veg;
-            final int totalCals;
-
-            // Complete create variables to access layout XML stuff
-            // Complete create variables that will store information that the user inputs into textbox views
-            // Complete create methods that will handle "done" click -> instantiate a new meal via constructor
-            // TODO add option to add additional "protein" "carb" "veg" options within the same meal
-
-            // Textboxes and relevant variables
-
-            // meal name
-
-            mMealNameEditText = (EditText) findViewById(R.id.meal_name_editText);
-            mealName = mMealNameEditText.getText().toString();
-
-            // protein component
-            mProteinOptionEditText = (EditText) findViewById(R.id.protein_option_editText);
-            protein = mProteinOptionEditText.getText().toString();
-
-            // carb component (s)
-            mCarbOptionEditText = (EditText) findViewById(R.id.carb_option_editText);
-            carb = mCarbOptionEditText.getText().toString();
-
-            // vegetable component (in particular) -> should include a "health mode" that changes the preset editTexts to
-            // remind you to eat properly
-            mVegOptionEditText = (EditText) findViewById(R.id.veg_option_editText);
-            veg = mVegOptionEditText.getText().toString();
-
-            // total calories (should be required)
-            mTotalCalsEditText = (EditText) findViewById(R.id.total_cals_editText);
-            totalCals = Integer.getInteger(mTotalCalsEditText.getText().toString());
-
-            // macros (not required)
-
-            // Add Meal button
-            mAddMealButton = (Button) findViewById(R.id.add_meal_button);
-            mAddMealButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    // Complete handle making a new meal, which will be tacked onto the end of a linkedlist
-                    mealList.add(new Meal(mealNum, mealName, protein, carb, veg, totalCals));
-
-                }
-            });
-
-
-
-        }
-
-
-    }
-    public class MyMealsActivity extends AppCompatActivity{
-
-        ListIterator<Meal> mealIterator;
-
-        // constructor produces an iterator for the mealzz
-        MyMealsActivity(LinkedList<Meal> userMeals){
-            mealIterator = userMeals.listIterator(0);
+            setContentView(R.layout.my_meals);
+            showMeals();
         }
 
         void showMeals (){
@@ -245,13 +200,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        Internals newSave = new Internals(mealList);
-        newSave.writeMealList();
-    }
 }
 

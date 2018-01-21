@@ -17,7 +17,7 @@ import java.util.LinkedList;
  * Created by Derek on 2018-01-20.
  */
 
-public class Internals extends AppCompatActivity implements Serializable {
+public class Internals implements Serializable {
 
     // Internals can save and read linked lists of meal objects currently
 
@@ -25,22 +25,22 @@ public class Internals extends AppCompatActivity implements Serializable {
     //  of sorts lmfaoo)
 
     // list of meals that were created by the user
+    File mealFile;
     LinkedList mealListToStore;
 
     Internals(){}
 
-    Internals(LinkedList listOfMeals){
+    Internals(LinkedList listOfMeals, File rwfile){
+        mealFile = rwfile;
         mealListToStore = listOfMeals;
     }
 
     public void writeMealList(){
 
-        File mealFile;
         FileOutputStream fos;
         ObjectOutputStream oos;
 
         try{
-            mealFile = new File(getFilesDir(), "meals");
             fos = new FileOutputStream(mealFile);
             oos = new ObjectOutputStream(fos);
             oos.writeObject(mealListToStore);
@@ -55,13 +55,11 @@ public class Internals extends AppCompatActivity implements Serializable {
     public LinkedList<Meal> getMealList(){
 
         LinkedList<Meal> mealListToRetrieve = null;
-
-        File mealFile;
         FileInputStream fis;
         ObjectInputStream ois;
 
         try {
-            mealFile = new File(getFilesDir(), "meals");
+
             fis = new FileInputStream(mealFile);
             ois = new ObjectInputStream(fis);
             mealListToRetrieve = (LinkedList<Meal>) ois.readObject();
