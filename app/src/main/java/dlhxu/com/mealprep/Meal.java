@@ -17,6 +17,7 @@ public class Meal {
     Meal(int MealNum, String mealName, String protein, String carb, String veg, int totalCals){
 
         myMealNum = MealNum;
+        myName = mealName;
         myProtein = protein;
         myCarb = carb;
         myVeg = veg;

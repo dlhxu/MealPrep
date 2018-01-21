@@ -8,4 +8,5 @@
     <string name="veg_option">veg?</string>
     <string name="total_calories">total calories?</string>
     <string name="title_activity_new_meal">NewMealActivity</string>
+    <string name="not_developed_yet">not ready yet :(</string>
 </resources>

@@ -1,26 +1,38 @@
 package dlhxu.com.mealprep;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.INotificationSideChannel;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.LinkedList;
+import java.util.ListIterator;
 //  Complete create a New Meal class for when they want to enter a new type of meal
-// TODO create a linkedlist of objects that will contain all the users meals
+// Complete (STRUCTURAL) handle internal storage
+// TODO (STRUCTURAL) handle myMeals Activity and dynamic Views etc.
 
 public class MainActivity extends AppCompatActivity {
+
 
 
     // meal number (for repetitively instantiating meal objects)
      int mealNum;
 
     // linked list for storing meals
-    LinkedList mealList = new LinkedList();
+    LinkedList<Meal> mealList = new LinkedList();
+
+    // access any saved files
+    Internals newReader = new Internals();
+
 
 
     // main menu button objects
@@ -39,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         // run setup
         // read from internal storage to retrieve the user's preset meals, weekly meal, etc.
         // create the linkedlist that the new
+
+        // appInit will initialize the list of Meals if it exists
+        appInit(newReader);
 
         // main menu
 
@@ -88,9 +103,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void appInit() {
-        //mealNum = linkedlist.getLast.mealNum;
+    void appInit(Internals newRead) {
 
+        mealList = newRead.getMealList();
+
+        if(mealList == null){
+            // can be used for future functionality, like starting a tutorial on how to use the app or smth
+        }
+        //mealNum = linkedlist.getLast.mealNum;
 
     }
     // NewMealActivity is mostly at working completeness -> requires ability to add multiple proteins
@@ -104,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
     //  a mealName in addition to the composition of the meal, used to aid in saving and accessing
     //  internal storage
 
-        public class NewMealActivity extends AppCompatActivity{
+    public class NewMealActivity extends AppCompatActivity{
 
         EditText mMealNameEditText;
         EditText mProteinOptionEditText;
@@ -171,7 +191,67 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+    public class MyMealsActivity extends AppCompatActivity{
 
+        ListIterator<Meal> mealIterator;
+
+        // constructor produces an iterator for the mealzz
+        MyMealsActivity(LinkedList<Meal> userMeals){
+            mealIterator = userMeals.listIterator(0);
+        }
+
+        void showMeals (){
+            // showMeals generates all the meals that the user has stored in the form of clickable
+            //  buttons that direct the user to a MealInfoActivity displaying the info of the clicked meal
+
+            // initializing the xml write components
+            ListView lv = (ListView) findViewById(R.id.my_meals);
+            ViewGroup.LayoutParams lp =
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            Button mealButton;
+            while (mealIterator.hasNext()){
+
+                // create a button at position which is equal to "next index"
+                Meal currentMeal = mealIterator.next();
+                mealButton = new Button (this);
+
+                mealButton.setId(mealIterator.nextIndex());
+                // button has name equal to the object.mealname of next()
+                mealButton.setText(currentMeal.myName);
+
+
+                // create an onClickListener which starts a new activity that contains
+                // a bunch of textviews displaying info about the meal (mealActivity)
+                mealButton.setOnClickListener(new View.OnClickListener()
+                    {@Override
+                    public void onClick(View view) {
+                        // TODO implement showMealInfo, which will bring the user to a stat page of their meal
+
+                        Toast.makeText(getApplicationContext(), "not ready yet :(", Toast.LENGTH_LONG).show();
+
+
+                                                  }
+                                              });
+                lv.addView(mealButton);
+            }
+
+        }
+
+        void showMealInfo() {
+            // TODO dynamically create an activity
+        }
+
+
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Internals newSave = new Internals(mealList);
+        newSave.writeMealList();
     }
 }
 
