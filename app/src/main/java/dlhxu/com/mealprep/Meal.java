@@ -14,10 +14,10 @@ public class Meal implements Serializable {
     String myProtein;
     String myCarb;
     String myVeg;
-    int myTotalCals;
+    String myTotalCals;
 
 
-    Meal(int MealNum, String mealName, String protein, String carb, String veg, int totalCals){
+    Meal(int MealNum, String mealName, String protein, String carb, String veg, String totalCals){
 
         myMealNum = MealNum;
         myName = mealName;

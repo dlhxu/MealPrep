@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class NewMealActivity extends AppCompatActivity {
 
@@ -24,10 +26,9 @@ public class NewMealActivity extends AppCompatActivity {
     EditText mTotalCalsEditText;
     Button mAddMealButton;
 
-    LinkedList<Meal> mealList;
+    ArrayList<Meal> mealList;
     File mealFile;
     int mealNum;
-
 
 
     @Override
@@ -36,21 +37,22 @@ public class NewMealActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_meal);
 
         // Fetch some required information
-
         mealFile = new File(getFilesDir(), "meals");
 
-        Intent intent = getIntent();
-        mealList = (LinkedList<Meal>) intent.getSerializableExtra("user meals");
 
+        Intent intent = getIntent();
+        Bundle userMealInfo = intent.getExtras();
+
+        mealList = (ArrayList<Meal>) userMealInfo.getSerializable("user meals");
 
         // this handles a mealNum of zero?
-        mealNum = intent.getIntExtra("meal num", 0);
+        mealNum = userMealInfo.getInt("meal num");
 
         final String mealName;
         final String protein;
         final String carb;
         final String veg;
-        final int totalCals;
+        final String totalCals;
 
 
         Toast.makeText(getApplicationContext(), ":(", Toast.LENGTH_LONG).show();
@@ -82,7 +84,7 @@ public class NewMealActivity extends AppCompatActivity {
 
         // total calories (should be required)
         mTotalCalsEditText = (EditText) findViewById(R.id.total_cals_editText);
-        totalCals = Integer.getInteger(mTotalCalsEditText.getText().toString());
+        totalCals = mTotalCalsEditText.getText().toString();
 
         // macros (not required)
 
@@ -102,9 +104,13 @@ public class NewMealActivity extends AppCompatActivity {
                 //  and the new mealNum
 
                 Intent i = new Intent(NewMealActivity.this, MainActivity.class);
-                i.putExtra("user meals", (Serializable) mealList);
-                i.putExtra("meal num", mealNum);
-                setResult(Activity.RESULT_OK);
+                Bundle sendBack = new Bundle();
+                sendBack.putSerializable("user meals", (Serializable) mealList);
+                sendBack.putInt("meal num", mealNum);
+
+                i.putExtras(sendBack);
+
+                setResult(Activity.RESULT_OK, i);
 
                 finish();
 

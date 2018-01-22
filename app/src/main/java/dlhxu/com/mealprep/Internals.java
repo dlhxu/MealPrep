@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -26,11 +27,11 @@ public class Internals implements Serializable {
 
     // list of meals that were created by the user
     File mealFile;
-    LinkedList mealListToStore;
+    ArrayList<Meal> mealListToStore;
 
     Internals(){}
 
-    Internals(LinkedList listOfMeals, File rwfile){
+    Internals(ArrayList<Meal> listOfMeals, File rwfile){
         mealFile = rwfile;
         mealListToStore = listOfMeals;
     }

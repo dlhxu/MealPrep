@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     int mealNum;
 
     // linked list for storing meals
-    LinkedList<Meal> mealList = new LinkedList();
+    ArrayList<Meal> mealList = new ArrayList();
 
     // internal storage
     File mealFile;
@@ -63,46 +64,47 @@ public class MainActivity extends AppCompatActivity {
         // main menu
 
 
-        final Intent myMealsIntent = new Intent (MainActivity.this, MyMealsActivity.class);
-
-
         mNewMealButton = (Button) findViewById(R.id.new_meal_button);
         mNewMealButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent newMealIntent = new Intent(MainActivity.this, NewMealActivity.class);
-                newMealIntent.putExtra("user meals", (Serializable) mealList);
-                newMealIntent.putExtra("meal num", mealNum);
+                Bundle userMealsInfo = new Bundle();
+                userMealsInfo.putSerializable("user meals", (Serializable) mealList);
+                userMealsInfo.putInt("meal num", mealNum);
+                newMealIntent.putExtras(userMealsInfo);
+
                 MainActivity.this.startActivityForResult(newMealIntent, 1);
             }
         });
 
         mNewMealPlanButton = (Button) findViewById(R.id.new_meal_button);
-        mNewMealPlanButton.setOnClickListener(new View.OnClickListener() {
+       /** mNewMealPlanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // generate a new meal plan and pull up the "this weeks meal plan"
                 // page that can be screenshotted (leverage the api)
             }
-        });
+        }); **/
 
 
-        mMyMealsButton = (Button) findViewById(R.id.my_meals_button);
+        /**mMyMealsButton = (Button) findViewById(R.id.my_meals_button);
         mMyMealsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // bring up a page that displays all the saved meals that the user has created
                 // requires a new activity
+                Intent myMealsIntent = new Intent();
                 MainActivity.this.startActivity(myMealsIntent);
 
                 // iterate through a linked list, generating a new object and assigning it to a button everytime
                 // possible through the View and ViewGroup objects, read up on it (documentation bookmarked!
             }
-        });
+        });**/
 
 
-        mThisWeekButton = (Button) findViewById(R.id.this_week_prep_button);
+        /**mThisWeekButton = (Button) findViewById(R.id.this_week_prep_button);
         mThisWeekButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,17 +113,17 @@ public class MainActivity extends AppCompatActivity {
                 // NewMealPlan button -> requires a new activity
 
             }
-        });
+        });**/
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1){
-            if(resultCode == Activity.RESULT_OK){
-                Intent i = getIntent();
-                mealList = (LinkedList<Meal>) i.getSerializableExtra("user meals");
-                mealNum = (i.getIntExtra("mealNum", 0));
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+
+                mealList = (ArrayList<Meal>) data.getSerializableExtra("user meals");
+                mealNum = data.getIntExtra("meal num", 1);
             }
         }
     }
